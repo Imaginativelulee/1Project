@@ -4,6 +4,7 @@ import Playgrounds
 
 struct ContentView: View {
     @State var isAvailable: Bool = true
+    @State var textField: String = ""
     //state is to refresh the variable in the UI so we use @state
     var body: some View {
         NavigationStack {
@@ -19,24 +20,25 @@ struct ContentView: View {
                         .fontWeight(
                             .semibold)
                     /*if isAvailable {
-                                Text("Available: Yes")
-                                    .foregroundColor(.green)
-                            } else {
-                                Text("Available: No")
-                                    .foregroundColor(.red)
-                            }*/
-                   
+                     Text("Available: Yes")
+                     .foregroundColor(.green)
+                     } else {
+                     Text("Available: No")
+                     .foregroundColor(.red)
+                     }*/
+                    
                     //interactive toggle: Putting the $ symbol in front of @State variables (like $isAvailable) passes a two-way binding so the toggle can both read the current state and write changes back to it. If you just write isAvailable without the $, Swift only passes the read-only value, and the toggle won't work.
                     Toggle(isOn: $isAvailable){
                         Text(isAvailable ? "Available: Yes" : "Available: No")
                         .foregroundColor(isAvailable ? .green : .red)}
                     .padding(.horizontal, 40)
-                   
+                    
+                    bio(text: $textField) //fun for bio called
                 }
                 .frame(maxWidth:.infinity,
                        alignment: .center)
                 .listRowBackground(Color.clear)
-               
+                
                 // 2. Button/Link to navigate to the second page, passing the shared state with a $
                 NavigationLink(destination: ContentView2(isAvailable: $isAvailable)) {
                     Text("Go to Second Page")
@@ -48,16 +50,25 @@ struct ContentView: View {
                 }
                 .padding(.top, 10)
                 .listRowBackground(Color.clear)
-               
-                Section{
-                    Text("hey!")
-                   
-                } header: {
-                    Text("about")
-                }
+                
+                
             }
         }
     }
+    //bio function, @viewbuilder is to allow a function to return swiftUI value
+    @ViewBuilder
+    func bio(text: Binding<String>) -> some View {
+        Section {
+            TextField("no bio", text: text)
+        } header: {
+            Text("About")
+        } footer: {
+            // This shows "No bio" at the bottom of the section only when empty
+            if text.wrappedValue.isEmpty {
+                Text("No bio")
+                    .foregroundColor(.gray)
+                    .italic()
+            }}}
 }
 
 struct ContentView2: View {
